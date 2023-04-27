@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Conteiner, CharactersList } from "./styles";
+import { Container, CharacterCard } from "./styles";
 import Image from "next/image";
 import md5 from "md5";
+import Pagination from "../Pagination";
+import { ClipLoader } from "react-spinners";
 
-interface CharactersProps {
+export interface CharactersProps {
   id: number;
   name: string;
   thumbnail: {
@@ -24,41 +26,52 @@ const InitialPage: React.FC = () => {
 
   const [characters, setCharacters] = useState<CharactersProps[]>([]);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const getCharacters = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.get(
-        `${baseCharacters}limit=${10}&ts=${time}&apikey=${publicKey}&hash=${hash}`
+        `${baseCharacters}limit=${100}&ts=${time}&apikey=${publicKey}&hash=${hash}`
       );
       setCharacters(response.data.data.results);
       console.log(response.data);
     } catch (err) {
       console.log(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  console.log(characters);
+  useEffect(() => {
+    getCharacters();
+  }, []);
 
   return (
-    <Conteiner>
-      <button onClick={() => getCharacters()}>Search from API</button>
-      <CharactersList>
-        {characters.map((item) => {
-          return (
-            <div key={item.id} className="character_card">
-              <p className="character_name">{item.name}</p>
+    <Container>
+      {isLoading ? (
+        <>
+          <p>Fetching Data</p>
+          <ClipLoader size={14} color={"grey"} />
+        </>
+      ) : (
+        <Pagination
+          data={characters}
+          pageSize={10}
+          renderItem={(character) => (
+            <CharacterCard key={character.id}>
+              <p className="character_name">{character.name}</p>
               <Image
-                src={`${item.thumbnail.path}.${item.thumbnail.extension}`}
+                src={`${character.thumbnail.path}.${character.thumbnail.extension}`}
                 alt="my-image"
-                width={140}
-                height={140}
+                width={200}
+                height={200}
               />
-            </div>
-          );
-        })}
-      </CharactersList>
-      <button>Previous Page</button>
-      <button>Next Page</button>
-    </Conteiner>
+            </CharacterCard>
+          )}
+        />
+      )}
+    </Container>
   );
 };
 

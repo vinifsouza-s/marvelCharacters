@@ -1,36 +1,29 @@
 import styled from 'styled-components'
 
-export const Conteiner = styled.div`
+export const Container = styled.div`
+ display: flex;
+    justify-content: center;
+
 `
 
-export const CharactersList = styled.div`
-
-display: grid;
-grid-template-columns: repeat(6, 1fr);
-gap: 1.2rem;
-
-.character_card{
-    border-radius: 4px;
-    background-color: #74737d;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.character_name{
-    background-color:#cbc7f0;
-    color:#685dc9;
-}
 
 
-p{
-    display:flex;
-    justify-content: center;
-    align-items: center;
-    height: .3rem;
-    padding: 2rem;
-  
-}
+export const CharacterCard = styled.div`
+ background-color: #f2f2f2;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.2s;
+margin-top: 1.5rem;
 
-`
+  &:hover {
+    transform: translateY(-5px);
+  }
+  .character_name {
+    font-size: 20px;
+    font-weight: bold;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    }
+`;
+
