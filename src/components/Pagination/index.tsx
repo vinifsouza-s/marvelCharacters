@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-import { Container, InputSearch, PaginationGroup } from "./styles";
-import { CharactersProps } from "../alllCharacters/intex";
+import { Container, InputSearch, PaginationGroup, DividerData } from "./styles";
+import { CharactersProps } from "../../pages/allCharacters";
 
 interface PaginationProps {
   data: CharactersProps[];
@@ -16,15 +16,15 @@ const Pagination = ({ data, pageSize, renderItem }: PaginationProps) => {
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
 
-  const filteredData = data.filter((item) => {
+  const filteredData = data?.filter((item) => {
     return Object.values(item).some((value) =>
       value?.toString()?.toLowerCase()?.includes(searchValue.toLowerCase())
     );
   });
 
-  const currentData = filteredData.slice(startIndex, endIndex);
+  const currentData = filteredData?.slice(startIndex, endIndex);
 
-  const totalPages = Math.ceil(filteredData.length / pageSize);
+  const totalPages = Math.ceil(filteredData?.length / pageSize);
 
   return (
     <Container>
@@ -39,9 +39,9 @@ const Pagination = ({ data, pageSize, renderItem }: PaginationProps) => {
         />
       </InputSearch>
 
-      <div className="divider_data">
-        {currentData.map((item) => renderItem(item))}
-      </div>
+      <DividerData>
+        {currentData?.map((item) => renderItem(item))}
+      </DividerData>
       <PaginationGroup>
         <button
           disabled={currentPage === 1}
@@ -50,7 +50,7 @@ const Pagination = ({ data, pageSize, renderItem }: PaginationProps) => {
           Previous Page
         </button>
         <p>
-          Page {currentPage} de {totalPages}
+          Page {currentPage} / {totalPages}
         </p>
         <button
           disabled={currentPage === totalPages || totalPages === 0}
