@@ -1,20 +1,37 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
- 
-  .divider_data{
-   display: grid;
-   grid-template-columns: repeat(5, 1fr);
-   gap:2rem
-  }
+
 `;
+
+export const DividerData = styled.div`
+display: grid !important; 
+   grid-template-columns: repeat(5, 1fr) !important;
+   gap:2rem !important;
+
+`
 
 export const PaginationGroup = styled.div`
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   margin-top: 2rem;
   gap: 1.2rem;
+
+  button{
+  border: none;
+  padding: 1rem 2rem;
+  background: #f78f3f;
+  color: white;
+  font-size: 1.4rem;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background: #ac6128;
+  }
+  }
 `;
 
 export const InputSearch = styled.div`

@@ -3,8 +3,10 @@ import axios from "axios";
 import { Container, CharacterCard } from "./styles";
 import Image from "next/image";
 import md5 from "md5";
-import Pagination from "../Pagination";
+import Pagination from "../../components/Pagination";
 import { ClipLoader } from "react-spinners";
+import LoadingCharacterCard from "../../components/LoadingSkeleton";
+import { useQuery } from "react-query";
 
 export interface CharactersProps {
   id: number;
@@ -15,50 +17,50 @@ export interface CharactersProps {
   };
 }
 
-const InitialPage: React.FC = () => {
+const AllCharacters: React.FC = () => {
   const publicKey = process.env.NEXT_PUBLIC_MARVEL_API;
   const privateKey = process.env.NEXT_PUBLIC_MARVEL_API_PRIVATE;
-
   const baseCharacters = `https://gateway.marvel.com:443/v1/public/characters?`;
   const time = Number(new Date());
-
   const hash = md5(time + String(privateKey) + String(publicKey));
 
-  const [characters, setCharacters] = useState<CharactersProps[]>([]);
+  const fetchCharacters = async () => {
+    const response = await axios.get(
+      `${baseCharacters}limit=${100}&ts=${time}&apikey=${publicKey}&hash=${hash}`
+    );
+    return response.data.data.results;
+  };
 
-  const [isLoading, setIsLoading] = useState(false);
+  const { data: characters, isLoading } = useQuery<CharactersProps[]>("characters", fetchCharacters);
 
   const getCharacters = async () => {
-    setIsLoading(true);
+ 
     try {
       const response = await axios.get(
         `${baseCharacters}limit=${100}&ts=${time}&apikey=${publicKey}&hash=${hash}`
       );
-      setCharacters(response.data.data.results);
       console.log(response.data);
+      return response.data.data.results
     } catch (err) {
       console.log(err);
-    } finally {
-      setIsLoading(false);
-    }
+    } 
   };
 
   useEffect(() => {
     getCharacters();
   }, []);
 
+  console.log(isLoading)
+
   return (
     <Container>
-      {isLoading ? (
-        <>
-          <p>Fetching Data</p>
-          <ClipLoader size={14} color={"grey"} />
-        </>
-      ) : (
         <Pagination
           data={characters}
           pageSize={10}
           renderItem={(character) => (
+            // isLoading ? 
+            // <LoadingCharacterCard />
+            // :
             <CharacterCard key={character.id}>
               <p className="character_name">{character.name}</p>
               <Image
@@ -70,9 +72,8 @@ const InitialPage: React.FC = () => {
             </CharacterCard>
           )}
         />
-      )}
     </Container>
   );
 };
 
-export default InitialPage;
+export default AllCharacters;

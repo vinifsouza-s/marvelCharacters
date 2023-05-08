@@ -1,12 +1,10 @@
 import styled from 'styled-components'
 
 export const Container = styled.div`
- display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 
 `
-
-
 
 export const CharacterCard = styled.div`
  background-color: #f2f2f2;
