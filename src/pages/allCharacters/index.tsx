@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import { Container, CharacterCard } from "./styles";
 import Image from "next/image";
 import md5 from "md5";
 import Pagination from "../../components/Pagination";
-import { ClipLoader } from "react-spinners";
-import LoadingCharacterCard from "../../components/LoadingSkeleton";
 import { useQuery } from "react-query";
+import AssembleIcon from "@/components/AssembleFavorite";
 
 export interface CharactersProps {
   id: number;
@@ -34,7 +33,7 @@ const AllCharacters: React.FC = () => {
   const { data: characters, isLoading } = useQuery<CharactersProps[]>("characters", fetchCharacters);
 
   const getCharacters = async () => {
- 
+
     try {
       const response = await axios.get(
         `${baseCharacters}limit=${100}&ts=${time}&apikey=${publicKey}&hash=${hash}`
@@ -43,37 +42,39 @@ const AllCharacters: React.FC = () => {
       return response.data.data.results
     } catch (err) {
       console.log(err);
-    } 
+    }
   };
 
   useEffect(() => {
     getCharacters();
   }, []);
 
-  console.log(isLoading)
 
   return (
     <Container>
-        <Pagination
-          data={characters}
-          pageSize={10}
-          renderItem={(character) => (
-            // isLoading ? 
-            // <LoadingCharacterCard />
-            // :
-            <CharacterCard key={character.id}>
-              <p className="character_name">{character.name}</p>
-              <Image
-                src={`${character.thumbnail.path}.${character.thumbnail.extension}`}
-                alt="my-image"
-                width={200}
-                height={200}
-              />
-            </CharacterCard>
-          )}
-        />
+      <Pagination
+        data={characters || []}
+        pageSize={10}
+        isLoading={isLoading}
+        renderItem={(character) => (
+          <CharacterCard key={character.id}>
+            <AssembleIcon />
+            <p className="character_name">{character.name}</p>
+            <Image
+              src={`${character.thumbnail.path}.${character.thumbnail.extension}`}
+              alt="my-image"
+              className="image_character"
+              width={200}
+              height={200}
+            />
+          </CharacterCard>
+        )}
+      />
     </Container>
   );
 };
 
 export default AllCharacters;
+
+
+
